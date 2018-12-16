@@ -1,0 +1,4 @@
+<div class="container">
+  <%= link "Neuen Spieler anlegen", class: "button",  to: Routes.player_path(@conn, :new) %>
+  <%= link "Alle Spieler auflisten", class: "button",  to: Routes.player_path(@conn, :index) %>
+</div>
