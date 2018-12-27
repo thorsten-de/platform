@@ -3,8 +3,13 @@ defmodule PlatformWeb.PlayerControllerTest do
 
   alias Platform.Accounts
 
-  @create_attrs %{score: 42, username: "some username"}
-  @update_attrs %{score: 43, username: "some updated username"}
+  @create_attrs %{password: "secret", username: "some username"}
+  @update_attrs %{
+    password: "new_secret",
+    display_name: "new displayname",
+    score: 43,
+    username: "some updated username"
+  }
   @invalid_attrs %{score: nil, username: nil}
 
   def fixture(:player) do
@@ -75,6 +80,7 @@ defmodule PlatformWeb.PlayerControllerTest do
     test "deletes chosen player", %{conn: conn, player: player} do
       conn = delete(conn, Routes.player_path(conn, :delete, player))
       assert redirected_to(conn) == Routes.player_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.player_path(conn, :show, player))
       end

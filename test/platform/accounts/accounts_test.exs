@@ -6,8 +6,13 @@ defmodule Platform.AccountsTest do
   describe "players" do
     alias Platform.Accounts.Player
 
-    @valid_attrs %{score: 42, username: "some username"}
-    @update_attrs %{score: 43, username: "some updated username"}
+    @valid_attrs %{password: "secret", username: "some username"}
+    @update_attrs %{
+      display_name: "some updated display name",
+      password: "new_secret",
+      score: 43,
+      username: "some updated username"
+    }
     @invalid_attrs %{score: nil, username: nil}
 
     def player_fixture(attrs \\ %{}) do
@@ -16,7 +21,12 @@ defmodule Platform.AccountsTest do
         |> Enum.into(@valid_attrs)
         |> Accounts.create_player()
 
-      player
+      player_attrs_map =
+        player
+        |> Map.from_struct()
+        |> Map.delete(:password)
+
+      Map.merge(%Player{}, player_attrs_map)
     end
 
     test "list_players/0 returns all players" do
@@ -31,7 +41,7 @@ defmodule Platform.AccountsTest do
 
     test "create_player/1 with valid data creates a player" do
       assert {:ok, %Player{} = player} = Accounts.create_player(@valid_attrs)
-      assert player.score == 42
+      assert player.password == "secret"
       assert player.username == "some username"
     end
 

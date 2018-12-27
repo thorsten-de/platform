@@ -18,5 +18,28 @@ defmodule Platform.Accounts.Player do
     |> cast(attrs, [:display_name, :password, :username, :score])
     |> validate_required([:username])
     |> unique_constraint(:username)
+    |> validate_password()
   end
+
+  def registration_changeset(player, attrs) do
+    player
+    |> cast(attrs, [:password, :username])
+    |> validate_required([:username, :password])
+    |> unique_constraint(:username)
+    |> validate_password()
+  end
+
+  defp validate_password(changeset) do
+    changeset
+    |> validate_length(:username, min: 2, max: 100)
+    |> validate_length(:password, min: 2, max: 100)
+    |> put_pass_digest()
+  end
+
+  defp put_pass_digest(%Ecto.Changeset{valid?: true, changes: %{password: pass}} = changeset) do
+    changeset
+    |> put_change(:password_digest, Comeonin.Bcrypt.hashpwsalt(pass))
+  end
+
+  defp put_pass_digest(changeset), do: changeset
 end
